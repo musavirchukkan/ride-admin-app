@@ -1,0 +1,865 @@
+{
+    "info": {
+        "_postman_id": "c8e3b4f6-5a72-4e1e-9b23-6f98c5d2f8e7",
+        "name": "Ride Admin API",
+        "description": "A collection for testing the Ride Admin API endpoints.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "refreshToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "userId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "driverId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "orderId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "email",
+            "value": "test@example.com",
+            "type": "string"
+        },
+        {
+            "key": "otpCode",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const jsonData = pm.response.json();",
+                                    "if (jsonData.status === 'success') {",
+                                    "    pm.collectionVariables.set('email', jsonData.data.user.email);",
+                                    "    pm.collectionVariables.set('userId', jsonData.data.user.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"Test1234!\",\n    \"confirmPassword\": \"Test1234!\",\n    \"fullName\": \"Test User\",\n    \"phoneNumber\": \"+1234567890\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Verify OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"otpCode\": \"{{otpCode}}\",\n    \"purpose\": \"registration\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/verify-otp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "verify-otp"
+                            ]
+                        },
+                        "description": "Verify OTP for registration"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const jsonData = pm.response.json();",
+                                    "if (jsonData.status === 'success') {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.tokens.access.token);",
+                                    "    pm.collectionVariables.set('refreshToken', jsonData.data.tokens.refresh.token);",
+                                    "    pm.collectionVariables.set('userId', jsonData.data.user.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"Test1234!\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login to get access token"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Current User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "me"
+                            ]
+                        },
+                        "description": "Get current user profile"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{email}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/forgot-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "forgot-password"
+                            ]
+                        },
+                        "description": "Request password reset"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"otpCode\": \"{{otpCode}}\",\n    \"newPassword\": \"NewTest1234!\",\n    \"confirmPassword\": \"NewTest1234!\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/reset-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "reset-password"
+                            ]
+                        },
+                        "description": "Reset password with OTP"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const jsonData = pm.response.json();",
+                                    "if (jsonData.status === 'success') {",
+                                    "    pm.collectionVariables.set('accessToken', jsonData.data.tokens.access.token);",
+                                    "    pm.collectionVariables.set('refreshToken', jsonData.data.tokens.refresh.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/refresh-token",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "refresh-token"
+                            ]
+                        },
+                        "description": "Refresh access token"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Resend OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{email}}\",\n    \"purpose\": \"registration\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/resend-otp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "resend-otp"
+                            ]
+                        },
+                        "description": "Resend OTP"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Authentication related endpoints"
+        },
+        {
+            "name": "Dashboard",
+            "item": [
+                {
+                    "name": "Get Dashboard Summary",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/dashboard/summary",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "summary"
+                            ]
+                        },
+                        "description": "Get dashboard summary data"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Monthly Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/dashboard/statistics/5/2025",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "statistics",
+                                "5",
+                                "2025"
+                            ]
+                        },
+                        "description": "Get statistics for May 2025"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Yearly Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/dashboard/statistics/2025",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "statistics",
+                                "2025"
+                            ]
+                        },
+                        "description": "Get statistics for 2025"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Top Drivers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/dashboard/drivers?limit=5",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "drivers"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "5"
+                                }
+                            ]
+                        },
+                        "description": "Get top performing drivers"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Dashboard related endpoints"
+        },
+        {
+            "name": "Drivers",
+            "item": [
+                {
+                    "name": "Get All Drivers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get all drivers with pagination"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Driver by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers/{{driverId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers",
+                                "{{driverId}}"
+                            ]
+                        },
+                        "description": "Get driver by ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Driver",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const jsonData = pm.response.json();",
+                                    "if (jsonData.status === 'success') {",
+                                    "    pm.collectionVariables.set('driverId', jsonData.data.driver.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"fullName\": \"John Driver\",\n    \"email\": \"driver@example.com\",\n    \"password\": \"Driver1234!\",\n    \"phoneNumber\": \"+1234567890\",\n    \"licenseNumber\": \"DL12345678\",\n    \"licenseExpiryDate\": \"2026-05-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers"
+                            ]
+                        },
+                        "description": "Create a new driver"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Driver",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"fullName\": \"John Updated Driver\",\n    \"phoneNumber\": \"+1987654321\",\n    \"licenseExpiryDate\": \"2027-05-01\",\n    \"isActive\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers/{{driverId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers",
+                                "{{driverId}}"
+                            ]
+                        },
+                        "description": "Update a driver"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Driver",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers/{{driverId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers",
+                                "{{driverId}}"
+                            ]
+                        },
+                        "description": "Delete a driver"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Driver Orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers/{{driverId}}/orders?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers",
+                                "{{driverId}}",
+                                "orders"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get orders for a specific driver"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Driver management endpoints"
+        },
+        {
+            "name": "Orders",
+            "item": [
+                {
+                    "name": "Get All Orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/orders?page=1&limit=10&status=pending",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "pending"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "2025-05-01",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2025-05-31",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "driverId",
+                                    "value": "{{driverId}}",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all orders with pagination and filtering"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Order by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/orders/{{orderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "{{orderId}}"
+                            ]
+                        },
+                        "description": "Get order by ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Order",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const jsonData = pm.response.json();",
+                                    "if (jsonData.status === 'success') {",
+                                    "    pm.collectionVariables.set('orderId', jsonData.data.order.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"driverId\": \"{{driverId}}\",\n    \"clientId\": \"{{userId}}\",\n    \"carComfort\": \"standard\",\n    \"orderedTime\": \"2025-05-01T14:30:00.000Z\",\n    \"startLocation\": \"123 Main St, City\",\n    \"finishLocation\": \"456 Elm St, City\",\n    \"income\": 25.50,\n    \"status\": \"pending\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/orders",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders"
+                            ]
+                        },
+                        "description": "Create a new order"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Order",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"completed\",\n    \"income\": 28.75,\n    \"rating\": 4.5,\n    \"clientComment\": \"Great service, driver was very polite.\",\n    \"distance\": 12.5,\n    \"duration\": 25\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/orders/{{orderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "{{orderId}}"
+                            ]
+                        },
+                        "description": "Update an order"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Order",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/orders/{{orderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "{{orderId}}"
+                            ]
+                        },
+                        "description": "Delete an order"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Order Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/orders/stats",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "stats"
+                            ]
+                        },
+                        "description": "Get order statistics"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Order management endpoints"
+        }
+    ]
+}

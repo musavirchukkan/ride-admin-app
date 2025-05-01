@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=ride_admin_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - JWT_SECRET=your_jwt_secret_key_here
+      - JWT_ACCESS_EXPIRATION=1h
+      - JWT_REFRESH_EXPIRATION=7d
+      - RESTRICTED_COUNTRIES=SY,AF,IR,KP,CU
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ride_admin_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
