@@ -6,13 +6,14 @@ import { Bell, Menu, X } from 'lucide-react';
 import Icon from '../components/ui/Icon';
 import Avatar from '../components/ui/Avatar';
 import logoutIcon from '../assets/icons/logout.svg';
+import authService from '../services/authService';
 
 export default function DashboardLayout({ children }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
+        authService.logout();
         navigate('/login');
     };
 

@@ -1,7 +1,7 @@
 // src/services/dataService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api'; // Replace with your backend URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/';
 
 // Reuse the same axios instance from authService
 const api = axios.create({

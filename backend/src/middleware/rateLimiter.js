@@ -20,7 +20,7 @@ exports.rateLimiter = rateLimit({
  * Stricter rate limiter for sensitive routes like authentication
  */
 exports.authRateLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
+    windowMs: 60 * 1000,
     max: 10, // Limit each IP to 10 requests per windowMs
     standardHeaders: true,
     legacyHeaders: false,
